@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>3D Printing Defect Classification</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22bg%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%230b1226%22/%3E%3Cstop offset=%221%22 stop-color=%22%2318285a%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%220%22%3E%3Cstop offset=%220%22 stop-color=%22%236fe3ff%22/%3E%3Cstop offset=%22.55%22 stop-color=%22%237fb0ff%22/%3E%3Cstop offset=%221%22 stop-color=%22%23c2a2ff%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22url%28%23bg%29%22/%3E%3Cg fill=%22none%22 stroke=%22%236fe3ff%22 stroke-width=%2220%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M92 156V92h64%22/%3E%3Cpath d=%22M356 92h64v64%22/%3E%3Cpath d=%22M92 356v64h64%22/%3E%3Cpath d=%22M420 356v64h-64%22/%3E%3C/g%3E%3Crect x=%22176%22 y=%22148%22 width=%22190%22 height=%2250%22 rx=%2216%22 fill=%22url%28%23g%29%22/%3E%3Crect x=%22146%22 y=%22214%22 width=%22220%22 height=%2250%22 rx=%2216%22 fill=%22url%28%23g%29%22 opacity=%22.85%22/%3E%3Crect x=%22146%22 y=%22280%22 width=%22220%22 height=%2250%22 rx=%2216%22 fill=%22url%28%23g%29%22 opacity=%22.65%22/%3E%3Crect x=%22132%22 y=%22346%22 width=%22248%22 height=%2222%22 rx=%2211%22 fill=%22%234f9fd6%22 opacity=%22.9%22/%3E%3C/svg%3E"><title>Detechrm: Detect Early. Print Right.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--mw:1100px;--r:18px;--pad:clamp(20px,4vw,56px);--fh:"Space Grotesk",system-ui,"Segoe UI",Arial,sans-serif;--fb:"Inter",system-ui,"Segoe UI",Arial,sans-serif}
-html[data-theme=light]{--grad:linear-gradient(160deg,#fff,#eaf3fb 45%,#cfe4f4);--panel:rgba(255,255,255,.74);--ps:rgba(255,255,255,.93);--pb:rgba(120,160,200,.32);--text:#16222f;--soft:#41566b;--muted:#5d7588;--ac:#3f9bd6;--ac2:#7cc0ec;--acs:rgba(63,155,214,.14);--good:#238a55;--goods:rgba(47,174,107,.16);--bad:#cc3f3b;--bads:rgba(217,83,79,.15);--ov:rgba(235,245,252,.5);--sh:0 8px 24px rgba(40,70,100,.13)}
-html[data-theme=dark]{--grad:linear-gradient(160deg,#05070d,#0a1424 50%,#02060f);--panel:rgba(14,24,42,.7);--ps:rgba(10,19,34,.93);--pb:rgba(120,170,230,.24);--text:#e8eef7;--soft:#b8c6da;--muted:#9bb0c9;--ac:#7fc4f5;--ac2:#4f9fd6;--acs:rgba(127,196,245,.16);--good:#4fd18a;--goods:rgba(79,209,138,.16);--bad:#ff6b66;--bads:rgba(255,107,102,.16);--ov:rgba(4,8,16,.5);--sh:0 8px 24px rgba(0,0,0,.45)}
+html[data-theme=light]{--grad:linear-gradient(160deg,#fff,#eaf3fb 45%,#cfe4f4);--panel:rgba(255,255,255,.74);--ps:rgba(255,255,255,.93);--pb:rgba(120,160,200,.32);--text:#16222f;--soft:#41566b;--muted:#5d7588;--ac:#3f9bd6;--ac2:#7cc0ec;--acs:rgba(63,155,214,.14);--good:#238a55;--goods:rgba(47,174,107,.16);--bad:#cc3f3b;--bads:rgba(217,83,79,.15);--ov:rgba(238,246,252,.84);--sh:0 8px 24px rgba(40,70,100,.13)}
+html[data-theme=dark]{--grad:linear-gradient(160deg,#05070d,#0a1424 50%,#02060f);--panel:rgba(14,24,42,.7);--ps:rgba(10,19,34,.93);--pb:rgba(120,170,230,.24);--text:#e8eef7;--soft:#b8c6da;--muted:#9bb0c9;--ac:#7fc4f5;--ac2:#4f9fd6;--acs:rgba(127,196,245,.16);--good:#4fd18a;--goods:rgba(79,209,138,.16);--bad:#ff6b66;--bads:rgba(255,107,102,.16);--ov:rgba(4,8,16,.66);--sh:0 8px 24px rgba(0,0,0,.45)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;font-family:var(--fb);color:var(--text);background:var(--grad);background-attachment:fixed;line-height:1.6;overflow-x:clip}
 h1,h2,h3{font-family:var(--fh);line-height:1.2;margin:0 0 .4em}p{margin:0 0 1em}img{max-width:100%;display:block}
@@ -59,16 +59,27 @@ section{position:relative;scroll-margin-top:64px}.wrap{max-width:var(--mw);margi
 .tg{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.tm{padding:14px}.tm small{color:var(--ac);font-weight:600}.note{background:var(--acs);border-left:4px solid var(--ac);padding:12px 16px;border-radius:8px;font-size:14px;color:var(--soft)}
 footer{background:var(--ps);border-top:1px solid var(--pb);padding:40px var(--pad)}.fn{font:700 clamp(26px,5vw,42px) var(--fh);margin:4px 0}.fs{font-size:14px;color:var(--soft)}.fm{margin-top:12px;font-size:13px;color:var(--muted)}
 .mb{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;display:none;place-items:center;padding:20px}.mb.open{display:grid}.md{width:min(520px,94vw);max-height:88vh;overflow:auto;padding:24px}
-@media(min-width:768px) and (prefers-reduced-motion:no-preference){html.anim .act{opacity:0}html.anim #a1{opacity:1}html.anim .later{display:inline}html.anim .pl{opacity:0}html.anim .dc,html.anim .dt,html.anim .sc{opacity:0}
+@media(prefers-reduced-motion:no-preference){html.anim .act{opacity:0}html.anim #a1{opacity:1}html.anim .later{display:inline}html.anim .pl{opacity:0}html.anim .dc,html.anim .dt,html.anim .sc{opacity:0}
 html.anim .acard{animation:fi .9s ease both,bob 6s ease-in-out .9s infinite}@keyframes fi{from{opacity:0;transform:translateY(30px)}}@keyframes bob{50%{transform:translateY(-8px)}}}
-@media(max-width:767px),(prefers-reduced-motion:reduce){.scene{height:auto!important}.stage{position:static;height:auto;overflow:visible;padding:40px var(--pad)}.ds{height:auto}.dt{position:static;overflow:visible;grid-template-columns:1fr;margin-bottom:16px;opacity:1!important;transform:none!important}.dt .pw{height:200px}.ls{grid-template-columns:1fr}.dc,.sc{opacity:1!important;transform:none!important}#pHead{display:none}.dcnt{display:none}}
+@media(prefers-reduced-motion:reduce){.scene{height:auto!important}.stage{position:static;height:auto;overflow:visible;padding:40px var(--pad)}.ds{height:auto}.dt{position:static;overflow:visible;grid-template-columns:1fr;margin-bottom:16px;opacity:1!important;transform:none!important}.dt .pw{height:200px}.ls{grid-template-columns:1fr}.dc,.sc{opacity:1!important;transform:none!important}#pHead{display:none}.dcnt{display:none}}
 @media(max-width:767px){.links{display:none}.hero .wrap,.sg,.ag,.hxg{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .ltl{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0}.ltl i{width:14px;height:14px;border-radius:4px;background:var(--muted)}.ltl i.ok{background:var(--good)}.ltl i.bad{background:var(--bad)}.lbn{background:var(--bad);color:#fff;padding:12px 14px;border-radius:12px;font-weight:600;margin-top:10px}
+.brand{display:flex;align-items:center;gap:8px}.brand svg{width:26px;height:26px;flex:none}
+.al{padding-left:18px;margin:8px 0}.al li{margin:5px 0;color:var(--soft)}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:28px}.fg h4{font:700 14px var(--fh);margin:0 0 10px}.fg a,.fg span{display:block;color:var(--soft);font-size:14px;margin:6px 0;text-decoration:none}.fg a:hover{color:var(--ac)}
+.fb{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;align-items:center;border-top:1px solid var(--pb);margin-top:28px;padding-top:18px;font-size:13px;color:var(--soft)}
+@media(max-width:767px){body{background-attachment:scroll}.bgs{height:100vh;height:100lvh}.bgl{background-position:50% 30%}.cam{aspect-ratio:3/4}}
+.brand span{display:flex;flex-direction:column;line-height:1.1}.brand img{width:30px;height:30px;object-fit:contain;flex:none;border-radius:6px}
+.dtn{display:block;font:800 clamp(18px,3.2vw,23px) var(--fh);letter-spacing:.01em;background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.tg2{display:block;font:600 10px var(--fb);color:var(--muted);letter-spacing:.05em;margin-top:2px}
+html[data-theme=light]{--g1:#0a74c9;--g2:#2f5bea;--g3:#7a3fe0}html[data-theme=dark]{--g1:#6fe3ff;--g2:#7fb0ff;--g3:#c2a2ff}
+.bgs{transition:filter .6s,transform .6s}html.bl .bgs{filter:blur(7px);transform:scale(1.04)}
+@media(max-width:767px){.dt{grid-template-columns:1fr;gap:8px;padding:12px;align-content:center;text-align:center}.dt .pw{height:clamp(110px,22vh,170px)}.dt h3{font-size:clamp(17px,5vw,22px)}.dt .w{font-size:13px}.ls{grid-template-columns:1fr 1fr;gap:8px;font-size:12px}.ds{height:min(78vh,620px)}.stage{padding:64px 16px 16px}#cards{height:auto!important}#cards .stage{position:static;height:auto;overflow:visible}#cards .row{flex-wrap:wrap;justify-content:center}#cards .dc{opacity:1!important;transform:none!important;width:calc(50% - 8px)}}
 </style></head><body>
 <div class="bgs"><div class="bgl bg-hero"></div><div class="bgl bg-scan"></div><div class="bgl bg-defects"></div><div class="bgl bg-about"></div></div><div class="ov"></div><div id="prog"></div>
 
-<nav class="nav"><div class="brand">3D Printing <i>Defect</i> Classification</div>
+<nav class="nav"><div class="brand"><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112" fill="#12204a"/><g fill="none" stroke="#6fe3ff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><path d="M92 156V92h64M356 92h64v64M92 356v64h64M420 356v64h-64"/></g><rect x="176" y="148" width="190" height="50" rx="16" fill="#8fb8ff"/><rect x="146" y="214" width="220" height="50" rx="16" fill="#7fa6f0" opacity=".85"/><rect x="146" y="280" width="220" height="50" rx="16" fill="#7fa6f0" opacity=".65"/><rect x="132" y="346" width="248" height="22" rx="11" fill="#4f9fd6"/></svg><span><b class="dtn">Detechrm</b><small class="tg2">Detect Early. Print Right.</small></span></div>
 <div class="links"><a href="#hero">Home</a><a href="#scan" class="in">Scan</a><a href="#live" class="in">Live Monitor</a><a href="#history" class="in">History</a><a href="#about">About</a></div>
 <button class="btn ib" id="theme" aria-label="Toggle theme">◐</button>
 <div id="guest"><button class="btn g" onclick="UI.mode('in')">Sign in</button> <button class="btn p" onclick="UI.mode('up')">Sign up</button></div>
@@ -120,16 +131,25 @@ html.anim .acard{animation:fi .9s ease both,bob 6s ease-in-out .9s infinite}@key
 <section class="scene" id="details" style="height:1100vh" data-bg="defects"><div class="stage"><div class="si"><div class="dcnt" id="dn">01/05</div><div class="ds" id="ds"></div></div></div></section>
 
 <section id="about" data-bg="about"><div class="wrap"><h2>About this project</h2><div class="ag"><div>
-<p>This tool classifies common defects in 3D-printed parts from a photograph. Capture or upload an image of a printed part and the classifier returns the most likely defect class, a confidence score and practical advice.</p>
+<p><b>What it is.</b> A student-built web tool that spots common 3D-printing failures from a single photo or from a live camera view. It looks at a picture of a print, marks where the problem is, names the defect, shows how confident it is and suggests what to do next.</p>
+<p><b>Why we built it.</b> A failed print wastes filament, hours of machine time and often the whole part. Failures such as spaghetti usually start small and are easy to stop early, but nobody can watch a printer for hours. This project explores whether a camera and a small AI model can do that watching.</p>
+<h3 style="margin-top:16px">What it can detect</h3>
+<ul class="al"><li><b>Spaghetti:</b> the print has come loose and filament is piling up in a tangle.</li><li><b>Stringing:</b> thin threads left between separate parts of the print.</li><li><b>Warping:</b> corners lifting off the bed as the part cools.</li><li><b>Normal:</b> no defect found.</li></ul>
 <h3 style="margin-top:16px">How it works</h3>
-<div class="si2 glass"><i>1</i><div><b>Take or upload a photo</b><br><span>of the 3D-printed part.</span></div></div>
-<div class="si2 glass"><i>2</i><div><b>The classifier examines the image</b><br><span>for common surface defects.</span></div></div>
-<div class="si2 glass"><i>3</i><div><b>It returns a class and confidence</b><br><span>for the most likely defect.</span></div></div>
-<div class="si2 glass"><i>4</i><div><b>Review and confirm</b><br><span>with manual inspection.</span></div></div>
-<div class="note">Prototype for academic purposes; confirm results with manual inspection.</div></div>
+<div class="si2 glass"><i>1</i><div><b>Take or upload a photo</b><br><span>or start Live Monitor with a camera pointed at the printer.</span></div></div>
+<div class="si2 glass"><i>2</i><div><b>An AI model examines the image</b><br><span>an object-detection model (YOLOv8) running right in your browser, so your photos stay on your device.</span></div></div>
+<div class="si2 glass"><i>3</i><div><b>You get the result</b><br><span>defect name, confidence, a box around the problem and practical advice.</span></div></div>
+<div class="si2 glass"><i>4</i><div><b>Live Monitor keeps watch</b><br><span>it checks every 10 to 30 seconds and raises an alert if a defect shows up in 3 checks in a row.</span></div></div>
+<div class="note">Academic prototype. The model scores roughly 75% mAP50 on our validation data and is weaker on stringing and warping. It does not detect every defect type (for example layer shifting). Always confirm results with manual inspection.</div></div>
 <div><h3>Project team</h3><div class="tg" id="tg"></div></div></div></div></section>
 
 
+<footer><div class="wrap"><div class="fg">
+<div><h4>Project</h4><a href="#about">About</a><a href="#details">Defects explained</a><a href="#about">How it works</a></div>
+
+<div><h4>Team &amp; Contact</h4><span><b>Kartik Raturi</b></span><a href="tel:+918076987389">+91 8076 987 389</a><span style="margin-top:12px"><b>Mohit</b></span><a href="tel:+919773839331">+91 97738 39331</a><span style="margin-top:12px">USAR, GGSIPU</span></div>
+<div><h4>Good to know</h4><a href="#about">Limitations</a><a href="#about">Technology</a><span>Academic prototype</span></div>
+</div><div class="fb"><div class="brand"><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112" fill="#12204a"/><g fill="none" stroke="#6fe3ff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><path d="M92 156V92h64M356 92h64v64M92 356v64h64M420 356v64h-64"/></g><rect x="176" y="148" width="190" height="50" rx="16" fill="#8fb8ff"/><rect x="146" y="214" width="220" height="50" rx="16" fill="#7fa6f0" opacity=".85"/><rect x="146" y="280" width="220" height="50" rx="16" fill="#7fa6f0" opacity=".65"/><rect x="132" y="346" width="248" height="22" rx="11" fill="#4f9fd6"/></svg><span><b class="dtn">Detechrm</b><small class="tg2">Detect Early. Print Right.</small></span></div><span>© 2026 Detechrm. All rights reserved. For academic use; confirm results manually.</span></div></div></footer>
 <div class="mb" id="mb"><div class="md glass"><button class="btn g" style="float:right" onclick="UI.closeProf()">Close</button><h2>Profile</h2>
 <p><b>User id:</b> <span id="pu"></span><br><b>Scans:</b> <span id="pn"></span></p><h3>Change password</h3>
 <div class="fl"><label for="op">Current password</label><input id="op" type="password"></div><div class="fl"><label for="np">New password (min 8)</label><input id="np" type="password"></div>
@@ -174,8 +194,8 @@ const Auth={
 /* ===== BACKGROUND IMAGES (cross-fade by section) ===== */
 const Bg={L:{},cur:null,
  init(){["hero","scan","defects","about"].forEach(k=>this.L[k]=$(".bg-"+k));this.load()},
- load(){const s=CFG.IMG[Theme.cur()];for(const k in this.L)this.img(this.L[k],s[k]);$$("[data-img=main]").forEach(e=>{e.innerHTML=PH;this.set(e,CFG.IMG.main)})},
- img(el,src){const i=new Image();i.onload=()=>{el.style.backgroundImage='url("'+src+'")'};i.onerror=()=>{el.style.backgroundImage=""};i.src=src},
+ load(){const s=CFG.IMG[Theme.cur()],mb=matchMedia("(max-width:767px)").matches;for(const k in this.L)this.img(this.L[k],mb?"images/background-mobile.jpg":s[k],s[k]);$$("[data-img=main]").forEach(e=>{e.innerHTML=PH;this.set(e,CFG.IMG.main)})},
+ img(el,src,fb){const i=new Image();i.onload=()=>{el.style.backgroundImage='url("'+src+'")'};i.onerror=()=>{if(fb&&fb!==src)this.img(el,fb);else el.style.backgroundImage=""};i.src=src},
  set(w,src){const i=document.createElement("img");i.alt="";i.onload=()=>{const p=w.querySelector(".ph");if(p)p.style.display="none"};i.onerror=()=>i.remove();w.appendChild(i);i.src=src},
  on(k){if(this.cur===k)return;this.cur=k;for(const x in this.L)this.L[x].classList.toggle("on",x===k)},
  calc(){const m=innerHeight/2;let best=null,bd=1e9;$$("[data-bg]").forEach(s=>{if(s.offsetParent===null)return;const r=s.getBoundingClientRect();if(r.top<=m&&r.bottom>=m){best=s;bd=-1;return}const d=Math.min(Math.abs(r.top-m),Math.abs(r.bottom-m));if(d<bd){bd=d;best=s}});if(best)this.on(best.dataset.bg)}};
@@ -212,8 +232,8 @@ const Scenes={
 const Engine={sc:[],tick:false,
  init(){this.sc=[["#printer",Scenes.printer],["#steps",Scenes.steps],["#cards",Scenes.cards],["#details",Scenes.details]].map(a=>({el:$(a[0]),fn:a[1],sp:null}));addEventListener("scroll",()=>this.req(),{passive:true});addEventListener("resize",()=>this.req(),{passive:true});this.req()},
  req(){if(this.tick)return;this.tick=true;requestAnimationFrame(()=>{this.tick=false;this.run()})},
- run(){const h=document.documentElement,mx=h.scrollHeight-innerHeight;$("#prog").style.width=(mx>0?clamp(h.scrollTop/mx,0,1)*100:0)+"%";Bg.calc();
-  if(matchMedia("(prefers-reduced-motion:reduce)").matches||innerWidth<768)return;let mv=false;
+ run(){const h=document.documentElement,mx=h.scrollHeight-innerHeight;$("#prog").style.width=(mx>0?clamp(h.scrollTop/mx,0,1)*100:0)+"%";Bg.calc();document.documentElement.classList.toggle("bl",h.scrollTop>innerHeight*.35);
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;let mv=false;
   for(const s of this.sc){if(s.el.offsetParent===null){s.sp=null;continue}const r=s.el.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight){s.sp=null;continue}
    const sp=r.height-innerHeight,t=sp>0?clamp(-r.top/sp,0,1):(r.top<0?1:0);if(s.sp===null)s.sp=t;s.sp+=(t-s.sp)*.12;if(Math.abs(t-s.sp)<.0004)s.sp=t;else mv=true;s.fn(s.sp)}
   if(mv)this.req()}};
@@ -222,16 +242,16 @@ const Scan={st:null,face:"environment",img:null,type:"upload",
  init(){$("#bc").onclick=()=>this.cap();$("#bs").onclick=()=>{this.face=this.face==="environment"?"user":"environment";this.stop(true);this.start()};$("#bx").onclick=()=>this.stop();
   $("#fi").onchange=e=>this.files(e.target.files);const d=$("#drop");d.ondragover=e=>{e.preventDefault();d.classList.add("d")};d.ondragleave=()=>d.classList.remove("d");d.ondrop=e=>{e.preventDefault();d.classList.remove("d");this.files(e.dataTransfer.files)};
   $("#an").onclick=()=>this.analyze();$("#cl").onclick=()=>this.clear();$("#ra").onclick=()=>{$("#res").style.display="none";this.clear()};
-  new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?(!document.hidden&&this.auto()):this.stop()),{threshold:.05}).observe($("#scan"));
-  document.addEventListener("visibilitychange",()=>{if(document.hidden)this.stop()})},
+  new IntersectionObserver(es=>es.forEach(e=>{this.vis=e.isIntersecting;e.isIntersecting?(!document.hidden&&this.auto()):this.stop()}),{threshold:.05}).observe($("#scan"));
+  document.addEventListener("visibilitychange",()=>{if(document.hidden)this.stop();else if(this.vis)this.auto()})},
  async auto(){if(!Auth.cur()||this.st)return;if(!window.isSecureContext){$("#cam").innerHTML='<div class="cm">Camera needs https or localhost. Import a photo from your gallery instead.</div>';return}
   try{if(navigator.permissions){const p=await navigator.permissions.query({name:"camera"});if(p.state==="granted"){this.start();return}}}catch(e){}
   $("#cam").innerHTML='<div class="cm"><div>Camera is not enabled yet.</div><button class="btn p" id="al">Allow</button><button class="btn g" id="dn2">Deny</button></div>';
   $("#al").onclick=()=>this.start();$("#dn2").onclick=()=>{$("#cam").innerHTML='<div class="cm">Camera permission was denied. Allow it in your browser site settings and reload, or import a photo from your gallery.</div>'}},
- async start(){try{this.st=await navigator.mediaDevices.getUserMedia({video:{facingMode:this.face},audio:false});const v=document.createElement("video");v.srcObject=this.st;v.autoplay=true;v.playsInline=true;v.muted=true;$("#cam").innerHTML="";$("#cam").appendChild(v);$("#bc").disabled=false;$("#bs").disabled=false;$("#bx").style.display="inline-block"}
+ async start(){try{this.st=await navigator.mediaDevices.getUserMedia({video:{facingMode:this.face},audio:false});const v=document.createElement("video");v.srcObject=this.st;v.autoplay=true;v.playsInline=true;v.muted=true;v.setAttribute("playsinline","");v.setAttribute("muted","");$("#cam").innerHTML="";$("#cam").appendChild(v);v.play().catch(()=>{});$("#bc").disabled=false;$("#bs").disabled=false;$("#bx").style.display="inline-block"}
   catch(e){$("#cam").innerHTML='<div class="cm">Could not access the camera. Allow camera permission in your browser settings, or import a photo from your gallery.</div>'}},
  stop(q){if(this.st){this.st.getTracks().forEach(t=>t.stop());this.st=null}if(!q){if($("#cam video"))$("#cam").innerHTML='<div class="cm">Camera stopped.</div>';$("#bc").disabled=true;$("#bs").disabled=true;$("#bx").style.display="none"}},
- cap(){const v=$("#cam video");if(!v)return;const c=document.createElement("canvas");c.width=v.videoWidth||640;c.height=v.videoHeight||480;c.getContext("2d").drawImage(v,0,0,c.width,c.height);c.toBlob(b=>this.prev(URL.createObjectURL(b),"camera"),"image/jpeg",.9)},
+ cap(){const v=$("#cam video");if(!v)return;if(!v.videoWidth){alert("Camera is still starting. Please try again in a moment.");return}const c=document.createElement("canvas");c.width=v.videoWidth||640;c.height=v.videoHeight||480;c.getContext("2d").drawImage(v,0,0,c.width,c.height);c.toBlob(b=>this.prev(URL.createObjectURL(b),"camera"),"image/jpeg",.9)},
  files(fl){const l=[...fl].filter(f=>["image/jpeg","image/png","image/webp"].includes(f.type)&&f.size<=10485760);if(!l.length){alert("Choose a JPG, PNG or WEBP image under 10 MB.");return}this.prev(URL.createObjectURL(l[0]),"upload")},
  prev(u,t){this.img=u;this.type=t;$("#pv").innerHTML="";const i=document.createElement("img");i.src=u;i.alt="Selected photo";$("#pv").appendChild(i);$("#prev").style.display="block";$("#res").style.display="none";$("#proc").style.display="none"},
  clear(){this.img=null;$("#prev").style.display="none";$("#pv").innerHTML="";$("#fi").value=""},
@@ -300,6 +320,7 @@ const Live={on:false,busy:false,st:null,tm:null,wl:null,ac:null,streak:0,hist:[]
   $("#ltl").innerHTML=this.hist.map(h=>'<i class="'+h.k+'" title="'+h.t+'"></i>').join("")},
  alert(l){try{const a=this.ac,o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.value=.2;o.start();o.stop(a.currentTime+.5)}catch(e){}
   try{if("Notification" in window&&Notification.permission==="granted")new Notification("3D print alert",{body:"Possible defect: "+l,tag:"dd-alert"})}catch(e){}}};
+(function(){const i=new Image();i.onload=()=>{$$(".brand svg").forEach(e=>{const m=document.createElement("img");m.src="images/logo.png";m.alt="Detechrm logo";e.replaceWith(m)});const l=document.querySelector("link[rel=icon]");if(l){l.removeAttribute("type");l.href="images/logo.png"}};i.src="images/logo.png"})();
 /* ===== HISTORY ===== */
 const Hist={open:null,
  init(){new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)this.close()}),{threshold:.01}).observe($("#history"))},
