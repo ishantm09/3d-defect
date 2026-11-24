@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3D Printing Defect Classification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--mw:1100px;--r:18px;--pad:clamp(20px,4vw,56px);--fh:"Space Grotesk",system-ui,"Segoe UI",Arial,sans-serif;--fb:"Inter",system-ui,"Segoe UI",Arial,sans-serif}
+html[data-theme=light]{--grad:linear-gradient(160deg,#fff,#eaf3fb 45%,#cfe4f4);--panel:rgba(255,255,255,.74);--ps:rgba(255,255,255,.93);--pb:rgba(120,160,200,.32);--text:#16222f;--soft:#41566b;--muted:#5d7588;--ac:#3f9bd6;--ac2:#7cc0ec;--acs:rgba(63,155,214,.14);--good:#238a55;--goods:rgba(47,174,107,.16);--bad:#cc3f3b;--bads:rgba(217,83,79,.15);--ov:rgba(235,245,252,.5);--sh:0 8px 24px rgba(40,70,100,.13)}
+html[data-theme=dark]{--grad:linear-gradient(160deg,#05070d,#0a1424 50%,#02060f);--panel:rgba(14,24,42,.7);--ps:rgba(10,19,34,.93);--pb:rgba(120,170,230,.24);--text:#e8eef7;--soft:#b8c6da;--muted:#9bb0c9;--ac:#7fc4f5;--ac2:#4f9fd6;--acs:rgba(127,196,245,.16);--good:#4fd18a;--goods:rgba(79,209,138,.16);--bad:#ff6b66;--bads:rgba(255,107,102,.16);--ov:rgba(4,8,16,.5);--sh:0 8px 24px rgba(0,0,0,.45)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--fb);color:var(--text);background:var(--grad);background-attachment:fixed;line-height:1.6;overflow-x:clip}
+h1,h2,h3{font-family:var(--fh);line-height:1.2;margin:0 0 .4em}p{margin:0 0 1em}img{max-width:100%;display:block}
+section{position:relative;scroll-margin-top:64px}.wrap{max-width:var(--mw);margin:0 auto;padding:var(--pad)}
+.bgs{position:fixed;inset:0;z-index:-2;pointer-events:none}.bgl{position:absolute;inset:0;opacity:0;transition:opacity .8s;background:var(--grad) center/cover}.bgl.on{opacity:1}
+.ov{position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--ov)}
+#prog{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--ac),var(--ac2));z-index:50}
+.nav{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:10px clamp(14px,4vw,32px);background:var(--ps);backdrop-filter:blur(10px);border-bottom:1px solid var(--pb)}
+.brand{font-family:var(--fh);font-weight:700;font-size:clamp(14px,2.6vw,19px);margin-right:auto;white-space:nowrap}.brand i{color:var(--ac);font-style:normal}
+.links{display:flex;gap:4px}.links a{text-decoration:none;color:var(--soft);font-weight:500;font-size:14px;padding:8px 12px;border-radius:10px}.links a:hover{background:var(--acs);color:var(--text)}
+.btn{font:600 14px var(--fb);cursor:pointer;border:1px solid var(--pb);background:var(--panel);color:var(--text);padding:9px 16px;border-radius:11px;text-decoration:none;display:inline-block;transition:transform .2s,background .2s}
+.btn:hover{transform:translateY(-1px)}.btn.p{background:var(--ac);color:#fff;border-color:transparent}.btn.g{background:transparent}.btn:disabled{opacity:.5;cursor:not-allowed}
+.ib{width:40px;height:40px;padding:0;display:grid;place-items:center}
+.usr{position:relative}.av{width:40px;height:40px;border-radius:50%;border:2px solid var(--ac);background:var(--acs);color:var(--ac);font:700 16px var(--fh);display:grid;place-items:center;cursor:pointer}
+.dd{position:absolute;top:50px;right:0;min-width:180px;background:var(--ps);border:1px solid var(--pb);border-radius:14px;box-shadow:var(--sh);padding:8px;opacity:0;visibility:hidden;transition:.2s}.dd.open{opacity:1;visibility:visible}
+.dd button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--soft);padding:10px 12px;border-radius:9px;cursor:pointer;font:14px var(--fb)}.dd button:hover{background:var(--acs);color:var(--text)}
+.glass{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--pb);border-radius:var(--r);box-shadow:var(--sh)}
+.hero{min-height:100vh;display:flex;align-items:center}.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;width:100%;align-items:center}
+.hero h1{font-size:clamp(30px,6vw,60px);letter-spacing:-.02em}.hero h1 i{color:var(--ac);font-style:normal}.tag{color:var(--soft);font-size:clamp(16px,2.4vw,20px);max-width:32ch}
+.side{display:flex;justify-content:center}.acard{padding:26px;width:min(420px,92vw)}
+.tabs{display:flex;gap:6px;margin-bottom:16px;background:var(--acs);padding:5px;border-radius:11px}.tabs button{flex:1;padding:9px;border:0;background:none;color:var(--soft);font:600 14px var(--fb);border-radius:8px;cursor:pointer}.tabs button.on{background:var(--ps);color:var(--text)}
+.fl{margin-bottom:14px;position:relative}.fl label{display:block;font-size:13px;color:var(--soft);margin-bottom:5px}.fl input{width:100%;padding:11px 13px;border-radius:11px;border:1px solid var(--pb);background:var(--ps);color:var(--text);font:15px var(--fb)}
+.eye{position:absolute;right:8px;bottom:6px;border:0;background:none;cursor:pointer;color:var(--muted);padding:6px;font-size:12px}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin-bottom:8px}
+.hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);color:var(--muted);font-size:13px;text-align:center}
+.scene{position:relative}.stage{position:sticky;top:0;height:100vh;height:100dvh;display:grid;place-items:center;overflow:hidden;padding:72px var(--pad) 24px}.si{width:100%;max-width:var(--mw);text-align:center}
+.pr{width:min(620px,92vw);height:auto;max-height:44vh}.fr{fill:var(--acs);stroke:var(--pb)}.nz{fill:var(--ac)}.nt{fill:var(--ac2)}.pl{fill:var(--ac);fill-opacity:.8}.pillar{fill:var(--ac);fill-opacity:.75}.bp{fill:var(--bad);fill-opacity:.8}
+.guide{stroke:var(--bad);stroke-width:2;stroke-dasharray:6 5}.thr{stroke:var(--bad);stroke-width:1.6;fill:none;stroke-linecap:round}.sf{fill:none;stroke:var(--ac);stroke-width:3;stroke-dasharray:8 6}.sl{fill:var(--ac)}
+.bbg{fill:var(--bad)}.btx{fill:#fff;font:700 16px var(--fh);text-anchor:middle}.sv{font:700 20px var(--fh);text-anchor:middle}.ok{fill:var(--soft)}.bd{fill:var(--bad)}
+#cap{display:block;max-width:560px;margin:12px auto 0;border-radius:16px;padding:10px 18px}#cap b{display:block;font:700 clamp(17px,2.6vw,22px) var(--fh)}#cap span{font-size:14px;color:var(--soft)}
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}.chips span{font-size:12px;padding:5px 12px;border-radius:999px;border:1px solid var(--pb);background:var(--panel);color:var(--muted);transition:.3s}.chips span.on{background:var(--ac);color:#fff;border-color:transparent}
+.later{display:none}
+.row{display:flex;gap:clamp(10px,2vw,20px);justify-content:center;flex-wrap:wrap}.dc{width:clamp(130px,16vw,190px);padding:16px;text-align:left;display:flex;flex-direction:column;gap:8px}.dc h3{font-size:16px;margin:0}.dc small{color:var(--soft);font-size:13px}.dc .pw{height:92px}
+.pw{position:relative;overflow:hidden;border-radius:12px;background:var(--acs)}.pw img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted)}.ph svg{width:36%;height:36%;opacity:.55}
+.ds{position:relative;width:100%;max-width:940px;margin:0 auto;height:min(66vh,560px)}.dcnt{text-align:right;max-width:940px;margin:0 auto 8px;font:700 18px var(--fh);color:var(--ac)}
+.dt{position:absolute;inset:0;overflow:hidden;display:grid;grid-template-columns:.85fr 1.15fr;gap:22px;align-items:center;padding:20px;text-align:left}.dt .pw{height:clamp(200px,44vh,380px)}
+.dt h3{font-size:clamp(20px,2.8vw,28px)}.dt .w{color:var(--soft);font-size:14px;line-height:1.5}.ls{display:grid;grid-template-columns:1fr 1fr;gap:14px}.ls b{color:var(--ac);font:700 12px var(--fh)}.ls ul{margin:.3em 0 0;padding-left:1.1em}.ls li{font-size:13px;color:var(--soft);margin-bottom:4px}
+.stp{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:16px}.sc{display:flex;align-items:center;gap:16px;padding:18px 22px;text-align:left}.sc i{width:44px;height:44px;border-radius:50%;background:var(--acs);color:var(--ac);display:grid;place-items:center;font:700 19px var(--fh);flex:none;font-style:normal}.sc h3{margin:0;font-size:18px}.sc p{margin:0;color:var(--soft);font-size:14px}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}.cam{position:relative;aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:#0b0f17;display:grid;place-items:center}.cam video{width:100%;height:100%;object-fit:cover}.cm{padding:16px;text-align:center;color:#d5e3f5;font-size:14px}.cm .btn{margin:8px 4px 0}
+.box{padding:18px}.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tip{margin-bottom:9px;font-size:14px;color:var(--soft)}.tip b{color:var(--text)}
+.drop{display:block;margin-top:12px;padding:20px;border:2px dashed var(--pb);border-radius:14px;text-align:center;color:var(--soft);cursor:pointer}.drop.d{background:var(--acs);border-color:var(--ac)}
+.prev .pw{height:220px;margin-top:12px}.proc,.res{padding:24px;margin-top:20px;text-align:center}.spin{width:44px;height:44px;border:4px solid var(--acs);border-top-color:var(--ac);border-radius:50%;margin:0 auto 12px;animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.bdg{display:inline-block;padding:8px 22px;border-radius:999px;font:700 clamp(18px,3vw,26px) var(--fh)}.bdg.good,.hb.good{background:var(--goods);color:var(--good)}.bdg.bad,.hb.bad{background:var(--bads);color:var(--bad)}
+.bar{height:12px;border-radius:8px;background:var(--acs);overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:width 1s}
+.t3{max-width:420px;margin:14px auto;text-align:left}.t3 div{display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:14px}.t3 span:first-child{width:120px;color:var(--soft)}.t3 .bar{flex:1;height:9px}.warn{background:var(--bads);color:var(--bad);padding:10px;border-radius:10px;font-size:13px;margin:10px 0}.dis{font-size:12px;color:var(--muted)}
+.hg{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}.hc{padding:14px;cursor:pointer}.hc .pw{height:130px}.hb{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;display:inline-block;margin-top:8px}.hm{font-size:12px;color:var(--muted);margin-top:4px}
+.hx{display:none;grid-column:1/-1;padding:20px}.hx.open{display:block;animation:ex .35s}@keyframes ex{from{opacity:0;transform:translateY(-8px)}}.hxg{display:grid;grid-template-columns:1fr 1fr;gap:18px}.hxg .pw{height:220px}.emp{text-align:center;padding:40px;color:var(--soft)}
+.ag{display:grid;grid-template-columns:1.2fr .8fr;gap:32px;align-items:start}.si2{display:flex;gap:14px;padding:14px;margin-bottom:12px}.si2 i{width:36px;height:36px;border-radius:50%;background:var(--acs);color:var(--ac);display:grid;place-items:center;font:700 16px var(--fh);flex:none;font-style:normal}.si2 span{color:var(--soft);font-size:14px}
+.tg{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.tm{padding:14px}.tm small{color:var(--ac);font-weight:600}.note{background:var(--acs);border-left:4px solid var(--ac);padding:12px 16px;border-radius:8px;font-size:14px;color:var(--soft)}
+footer{background:var(--ps);border-top:1px solid var(--pb);padding:40px var(--pad)}.fn{font:700 clamp(26px,5vw,42px) var(--fh);margin:4px 0}.fs{font-size:14px;color:var(--soft)}.fm{margin-top:12px;font-size:13px;color:var(--muted)}
+.mb{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;display:none;place-items:center;padding:20px}.mb.open{display:grid}.md{width:min(520px,94vw);max-height:88vh;overflow:auto;padding:24px}
+@media(min-width:768px) and (prefers-reduced-motion:no-preference){html.anim .act{opacity:0}html.anim #a1{opacity:1}html.anim .later{display:inline}html.anim .pl{opacity:0}html.anim .dc,html.anim .dt,html.anim .sc{opacity:0}
+html.anim .acard{animation:fi .9s ease both,bob 6s ease-in-out .9s infinite}@keyframes fi{from{opacity:0;transform:translateY(30px)}}@keyframes bob{50%{transform:translateY(-8px)}}}
+@media(max-width:767px),(prefers-reduced-motion:reduce){.scene{height:auto!important}.stage{position:static;height:auto;overflow:visible;padding:40px var(--pad)}.ds{height:auto}.dt{position:static;overflow:visible;grid-template-columns:1fr;margin-bottom:16px;opacity:1!important;transform:none!important}.dt .pw{height:200px}.ls{grid-template-columns:1fr}.dc,.sc{opacity:1!important;transform:none!important}#pHead{display:none}.dcnt{display:none}}
+@media(max-width:767px){.links{display:none}.hero .wrap,.sg,.ag,.hxg{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.ltl{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0}.ltl i{width:14px;height:14px;border-radius:4px;background:var(--muted)}.ltl i.ok{background:var(--good)}.ltl i.bad{background:var(--bad)}.lbn{background:var(--bad);color:#fff;padding:12px 14px;border-radius:12px;font-weight:600;margin-top:10px}
+</style></head><body>
+<div class="bgs"><div class="bgl bg-hero"></div><div class="bgl bg-scan"></div><div class="bgl bg-defects"></div><div class="bgl bg-about"></div></div><div class="ov"></div><div id="prog"></div>
+
+<nav class="nav"><div class="brand">3D Printing <i>Defect</i> Classification</div>
+<div class="links"><a href="#hero">Home</a><a href="#scan" class="in">Scan</a><a href="#live" class="in">Live Monitor</a><a href="#history" class="in">History</a><a href="#about">About</a></div>
+<button class="btn ib" id="theme" aria-label="Toggle theme">◐</button>
+<div id="guest"><button class="btn g" onclick="UI.mode('in')">Sign in</button> <button class="btn p" onclick="UI.mode('up')">Sign up</button></div>
+<div class="usr" id="usr" style="display:none"><div class="av" id="av">?</div><div class="dd" id="dd"><button onclick="UI.prof()">Profile</button><button onclick="UI.out()">Logout</button></div></div></nav>
+
+<section class="hero" id="hero" data-bg="hero"><div class="wrap">
+<div><h1>Spot defects in 3D prints <i>from a photo</i></h1><p class="tag">A student-built tool that classifies common defects in 3D-printed parts from a single photograph.</p></div>
+<div class="side">
+<div class="acard glass" id="acard"><h2 id="at">Welcome back</h2>
+<div class="tabs"><button id="ti" class="on" onclick="UI.mode('in')">Sign in</button><button id="tu" onclick="UI.mode('up')">Sign up</button></div>
+<form id="af" autocomplete="off">
+<div class="fl"><label for="au">User id</label><input id="au" required placeholder="3-20 letters, numbers, underscore"></div>
+<div class="fl"><label for="ap">Password</label><input id="ap" type="password" required placeholder="At least 8 characters"><button type="button" class="eye" onclick="UI.eye('ap')">show</button></div>
+<div class="fl" id="cf" style="display:none"><label for="ac">Confirm password</label><input id="ac" type="password" placeholder="Re-enter password"></div>
+<div class="err" id="ae"></div><button class="btn p" id="as" style="width:100%">Sign in</button></form></div>
+<div class="glass" id="hw" style="display:none;padding:28px;width:min(440px,92vw)"><h2>Welcome, <span id="wn"></span></h2><p style="color:var(--soft)">Scroll down to scan a part or review your history.</p>
+<div class="pw" style="height:200px" data-img="main"></div><p style="margin-top:14px"><a class="btn p" href="#scan">Start a scan</a></p></div>
+</div></div><div class="hint">Scroll ↓</div></section>
+
+<section class="scene" id="printer" style="height:900vh" data-bg="defects"><div class="stage"><div class="si">
+<svg class="pr" viewBox="0 0 600 340" role="img" aria-label="Printer animation: printing, three defects, AI scan">
+<g class="act" id="a1"><rect x="150" y="22" width="300" height="12" rx="4" class="fr"/><rect x="154" y="34" width="9" height="264" rx="3" class="fr"/><rect x="437" y="34" width="9" height="264" rx="3" class="fr"/><rect x="140" y="298" width="320" height="14" rx="4" class="fr"/><g id="pL"></g><g id="pHead"><rect x="-22" y="-18" width="44" height="18" rx="4" class="nz"/><path d="M-7 0L7 0L0 14Z" class="nt"/></g></g>
+<g class="act later" id="a2"><text x="170" y="62" class="sv ok">Normal</text><text x="430" y="62" class="sv bd">Layer shift</text><rect x="95" y="250" width="150" height="6" rx="3" class="fr"/><rect x="355" y="250" width="150" height="6" rx="3" class="fr"/><g id="sOk"></g><g id="sBad"></g><line x1="350" y1="170" x2="510" y2="170" class="guide"/></g>
+<g class="act later" id="a3"><text x="170" y="62" class="sv ok">Normal</text><text x="430" y="62" class="sv bd">Stringing</text><rect x="95" y="250" width="150" height="6" rx="3" class="fr"/><rect x="355" y="250" width="150" height="6" rx="3" class="fr"/><rect x="116" y="100" width="22" height="150" rx="4" class="pillar"/><rect x="202" y="100" width="22" height="150" rx="4" class="pillar"/><rect x="376" y="100" width="22" height="150" rx="4" class="pillar"/><rect x="462" y="100" width="22" height="150" rx="4" class="pillar"/><path class="thr" d="M398 118q32 12 64 0M398 140q32 16 64 0M398 162q32 10 64 0M398 184q32 15 64 0M398 206q32 11 64 0"/></g>
+<g class="act later" id="a4"><text x="170" y="62" class="sv ok">Normal</text><text x="430" y="62" class="sv bd">Warping</text><rect x="95" y="250" width="150" height="6" rx="3" class="fr"/><rect x="355" y="250" width="150" height="6" rx="3" class="fr"/><rect x="100" y="230" width="140" height="18" rx="4" class="pillar"/><path class="bp" d="M360 196Q372 230 410 230L450 230Q488 230 500 196L500 214Q488 248 450 248L410 248Q372 248 360 214Z"/><text x="360" y="178" class="sv bd">↑</text><text x="500" y="178" class="sv bd">↑</text></g>
+<g class="act later" id="a5"><rect x="215" y="250" width="170" height="6" rx="3" class="fr"/><g id="sPart"></g><rect x="205" y="66" width="190" height="196" rx="12" class="sf"/><rect id="sLine" x="205" y="70" width="190" height="3" class="sl"/><g id="pB" transform="translate(300,38) scale(.5)" style="opacity:0"><rect x="-72" y="-18" width="144" height="36" rx="18" class="bbg"/><text x="0" y="6" class="btx">Defect found</text></g></g>
+</svg>
+<div id="cap" class="glass"><b id="ct">Step 1 · Printing</b><span id="cs">A 3D printer builds a part one thin layer at a time.</span></div>
+<div class="chips" id="chips"><span class="on">1 Print</span><span>2 Layer shift</span><span>3 Stringing</span><span>4 Warping</span><span>5 AI scan</span></div>
+</div></div></section>
+
+<section class="scene" id="steps" style="height:450vh;display:none" data-bg="scan"><div class="stage"><div class="si"><h2>How to get a good result</h2><div class="stp" id="stp"></div></div></div></section>
+
+<section id="scan" data-bg="scan" style="display:none"><div class="wrap"><h2>Scan a part</h2><div class="sg">
+<div class="box glass"><div class="cam" id="cam"><div class="cm">Camera preview appears here.</div></div><div class="tools"><button class="btn p" id="bc" disabled>Capture</button><button class="btn" id="bs" disabled>Switch camera</button><button class="btn g" id="bx" style="display:none">Stop</button></div></div>
+<div class="box glass"><h3>Tips for a clear photo</h3><div class="tip"><b>Good light:</b> even, soft lighting; avoid harsh shadows.</div><div class="tip"><b>Hold steady:</b> 30-40 cm from the part, in focus.</div><div class="tip"><b>Fill the frame:</b> centre the part or defect.</div><div class="tip"><b>Capture or import:</b> use the camera or pick from your gallery.</div>
+<label class="drop" id="drop">Import from gallery (JPG, PNG, WEBP, max 10 MB)<input type="file" id="fi" accept="image/jpeg,image/png,image/webp" hidden></label>
+<div class="prev" id="prev" style="display:none"><div class="pw" id="pv"></div><p style="margin-top:12px"><button class="btn p" id="an">Analyze</button> <button class="btn g" id="cl">Clear</button></p></div></div></div>
+<div class="proc glass" id="proc" style="display:none"><div class="spin"></div><h3>Analyzing…</h3><div id="est" style="color:var(--soft)"></div></div>
+<div class="res glass" id="res" style="display:none"><div class="bdg" id="rb"></div><h3 id="rc" style="margin-top:10px"></h3><div style="max-width:420px;margin:0 auto"><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--soft)"><span>Confidence</span><span id="rp"></span></div><div class="bar"><i id="rf"></i></div></div>
+<div class="t3" id="t3"></div><p id="rd" style="color:var(--soft);font-size:14px"></p><div class="warn" id="rw" style="display:none">Low confidence. Please retake the photo for a more reliable result.</div><div class="dis">Prototype for academic purposes: confirm results with manual inspection.</div><p style="margin-top:12px"><button class="btn g" id="ra">Analyze another</button></p></div>
+</div></section>
+
+<section id="live" data-bg="scan" style="display:none"><div class="wrap"><h2>Live Monitor</h2><div class="sg">
+<div class="box glass"><div class="cam" id="lcam"><div class="cm">Place the camera beside the printer, then press Start.</div></div><div class="tools"><button class="btn p" id="lgo">Start</button><label class="tip" style="margin:0;align-self:center">Check every <select id="lsel"><option value="10">10 s</option><option value="15">15 s</option><option value="30">30 s</option></select></label></div></div>
+<div class="box glass"><h3>Status</h3><div class="bdg" id="lst" style="margin:8px 0">Idle</div><p class="tip" id="ltm">No checks yet.</p><div class="ltl" id="ltl"></div><div class="lbn" id="lbn" style="display:none"></div><p class="tip">Alert: defect score of 50% or more in 3 checks in a row. Last 20 checks are shown above.</p></div></div></div></section>
+<section id="history" data-bg="scan" style="display:none"><div class="wrap"><h2>Your scan history</h2><div id="ha"></div></div></section>
+<section class="scene" id="cards" style="height:500vh" data-bg="defects"><div class="stage"><div class="si"><h2 style="margin-bottom:22px">Common defects we look for</h2><div class="row" id="crow"></div></div></div></section>
+<section class="scene" id="details" style="height:1100vh" data-bg="defects"><div class="stage"><div class="si"><div class="dcnt" id="dn">01/05</div><div class="ds" id="ds"></div></div></div></section>
+
+<section id="about" data-bg="about"><div class="wrap"><h2>About this project</h2><div class="ag"><div>
+<p>This tool classifies common defects in 3D-printed parts from a photograph. Capture or upload an image of a printed part and the classifier returns the most likely defect class, a confidence score and practical advice.</p>
+<h3 style="margin-top:16px">How it works</h3>
+<div class="si2 glass"><i>1</i><div><b>Take or upload a photo</b><br><span>of the 3D-printed part.</span></div></div>
+<div class="si2 glass"><i>2</i><div><b>The classifier examines the image</b><br><span>for common surface defects.</span></div></div>
+<div class="si2 glass"><i>3</i><div><b>It returns a class and confidence</b><br><span>for the most likely defect.</span></div></div>
+<div class="si2 glass"><i>4</i><div><b>Review and confirm</b><br><span>with manual inspection.</span></div></div>
+<div class="note">Prototype for academic purposes; confirm results with manual inspection.</div></div>
+<div><h3>Project team</h3><div class="tg" id="tg"></div></div></div></div></section>
+
+
+<div class="mb" id="mb"><div class="md glass"><button class="btn g" style="float:right" onclick="UI.closeProf()">Close</button><h2>Profile</h2>
+<p><b>User id:</b> <span id="pu"></span><br><b>Scans:</b> <span id="pn"></span></p><h3>Change password</h3>
+<div class="fl"><label for="op">Current password</label><input id="op" type="password"></div><div class="fl"><label for="np">New password (min 8)</label><input id="np" type="password"></div>
+<div class="err" id="pe"></div><button class="btn p" onclick="UI.chPass()">Update password</button></div></div>
+
+<script>
+"use strict";
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const clamp=(v,a,b)=>v<a?a:v>b?b:v,lerp=(a,b,t)=>a+(b-a)*t,ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,seg=(p,a,b)=>clamp((p-a)/(b-a),0,1);
+const PH='<div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M3 17l5-4 4 3 3-2 6 5"/></svg></div>';
+/* ===== CONFIG: edit these later ===== */
+const CFG={
+ IMG:{light:{hero:"images/bg-hero-light.jpg",scan:"images/bg-scan-light.jpg",defects:"images/bg-defects-light.jpg",about:"images/bg-about-light.jpg"},
+      dark:{hero:"images/bg-hero-dark.jpg",scan:"images/bg-scan-dark.jpg",defects:"images/bg-defects-dark.jpg",about:"images/bg-about-dark.jpg"},
+      main:"images/hero-main.jpg",def:[1,2,3,4,5].map(i=>"images/defect-"+i+".jpg")},
+ API_URL:"https://hearts-laboratories-donald-ace.trycloudflare.com", /* tunnel link: changes whenever cloudflared is restarted */
+ DEF:[ /* CONFIRM the 5 names with your dataset (print(class_names) in Colab) */
+ {n:"Layer shifting",i:"Upper layers slide sideways from the lower ones.",w:"Layers above a certain point are displaced sideways relative to the layers below, as if the part was sliced and slid over.",c:["Loose belts or pulleys on the X/Y axis","Print speed or acceleration set too high","Collisions between the nozzle and the print"],f:["Tighten belts and check pulley screws","Lower speed and acceleration","Use a stable, vibration-free surface"]},
+ {n:"Stringing",i:"Thin plastic threads between separate parts.",w:"Fine threads of plastic are left behind when the nozzle travels across gaps, giving a cobweb look.",c:["Retraction too low or disabled","Nozzle temperature too high","Filament has absorbed moisture"],f:["Enable or increase retraction","Lower the nozzle temperature slightly","Dry the filament before printing"]},
+ {n:"Warping",i:"Corners curl up and lift off the bed.",w:"Corners or edges lift away from the build plate because the plastic shrinks as it cools unevenly.",c:["Bed not hot enough or uneven","First layer not pressed down enough","Drafts or rapid cooling"],f:["Heat the bed as recommended and level it","Add a brim or raft","Block drafts or use an enclosure"]},
+ {n:"Cracking",i:"Small splits along the layer lines.",w:"Splits appear along the layer lines, usually on tall prints where upper layers cool and shrink faster than lower ones.",c:["Print temperature too low","Cooling fan too strong","Layer height too large"],f:["Raise the nozzle temperature slightly","Reduce the cooling fan speed","Print in a warmer, enclosed space"]},
+ {n:"Under-extrusion",i:"Too little plastic: thin, gappy layers.",w:"The printer pushes out less plastic than needed, so layers are thin and weak with gaps or missing infill.",c:["Partly blocked nozzle or tangled filament","Nozzle temperature too low","Flow rate set too low"],f:["Clear a partial nozzle clog","Check the filament path for tangles","Raise temperature or flow rate a little"]}],
+ TEAM:["Kartik Raturi|Team member","Mohit|Team member","Dr. Ankur Bhargava|Supervisor","USAR, GGSIPU|Institute"]
+};
+/* ===== THEME ===== */
+const Theme={cur:()=>document.documentElement.dataset.theme,
+ init(){const s=localStorage.getItem("dd_theme");document.documentElement.dataset.theme=s||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");$("#theme").onclick=()=>{const n=Theme.cur()==="dark"?"light":"dark";document.documentElement.dataset.theme=n;localStorage.setItem("dd_theme",n);Bg.load()}}};
+/* ===== AUTH (local; replace with Supabase later) ===== */
+const Auth={
+ async sha(s,p){const t=s+":"+p;if(window.crypto&&crypto.subtle){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}let a=5381;for(const c of t)a=(a*33^c.charCodeAt(0))>>>0;return"f"+a},
+ rnd(){return[...crypto.getRandomValues(new Uint8Array(8))].map(b=>b.toString(16).padStart(2,"0")).join("")},
+ users(){try{return JSON.parse(localStorage.getItem("dd_users"))||{}}catch(e){return{}}},save(u){localStorage.setItem("dd_users",JSON.stringify(u))},
+ cur(){const id=localStorage.getItem("dd_sess");return id&&this.users()[id]?{id}:null},
+ async up(id,p){if(!/^[a-zA-Z0-9_]{3,20}$/.test(id))throw"User id must be 3-20 letters, numbers or underscore.";if(p.length<8)throw"Password must be at least 8 characters.";const u=this.users();if(u[id])throw"This user id is already taken.";const s=this.rnd();u[id]={s,h:await this.sha(s,p)};this.save(u);localStorage.setItem("dd_sess",id)},
+ async inn(id,p){const u=this.users()[id];if(!u||await this.sha(u.s,p)!==u.h)throw"Wrong user id or password.";localStorage.setItem("dd_sess",id)},
+ out(){localStorage.removeItem("dd_sess")},
+ async chg(id,o,n){const us=this.users(),u=us[id];if(await this.sha(u.s,o)!==u.h)throw"Current password is incorrect.";if(n.length<8)throw"New password must be at least 8 characters.";u.s=this.rnd();u.h=await this.sha(u.s,n);this.save(us)},
+ hist(id){try{return JSON.parse(localStorage.getItem("dd_h_"+id))||[]}catch(e){return[]}},
+ add(id,s){const h=this.hist(id);h.unshift(s);localStorage.setItem("dd_h_"+id,JSON.stringify(h.slice(0,50)))},
+ del(id,i){const h=this.hist(id);h.splice(i,1);localStorage.setItem("dd_h_"+id,JSON.stringify(h))}};
+/* ===== BACKGROUND IMAGES (cross-fade by section) ===== */
+const Bg={L:{},cur:null,
+ init(){["hero","scan","defects","about"].forEach(k=>this.L[k]=$(".bg-"+k));this.load()},
+ load(){const s=CFG.IMG[Theme.cur()];for(const k in this.L)this.img(this.L[k],s[k]);$$("[data-img=main]").forEach(e=>{e.innerHTML=PH;this.set(e,CFG.IMG.main)})},
+ img(el,src){const i=new Image();i.onload=()=>{el.style.backgroundImage='url("'+src+'")'};i.onerror=()=>{el.style.backgroundImage=""};i.src=src},
+ set(w,src){const i=document.createElement("img");i.alt="";i.onload=()=>{const p=w.querySelector(".ph");if(p)p.style.display="none"};i.onerror=()=>i.remove();w.appendChild(i);i.src=src},
+ on(k){if(this.cur===k)return;this.cur=k;for(const x in this.L)this.L[x].classList.toggle("on",x===k)},
+ calc(){const m=innerHeight/2;let best=null,bd=1e9;$$("[data-bg]").forEach(s=>{if(s.offsetParent===null)return;const r=s.getBoundingClientRect();if(r.top<=m&&r.bottom>=m){best=s;bd=-1;return}const d=Math.min(Math.abs(r.top-m),Math.abs(r.bottom-m));if(d<bd){bd=d;best=s}});if(best)this.on(best.dataset.bg)}};
+/* ===== BUILD CONTENT ===== */
+const Build={
+ photo(src){const w=document.createElement("div");w.className="pw";w.innerHTML=PH;Bg.set(w,src);return w},
+ all(){
+  const NS="http://www.w3.org/2000/svg",rect=(g,x,y,w,h,c)=>{const r=document.createElementNS(NS,"rect");r.setAttribute("x",x);r.setAttribute("y",y);r.setAttribute("width",w);r.setAttribute("height",h);r.setAttribute("rx",3);if(c)r.setAttribute("class",c);g.appendChild(r)};
+  const m=$("#pL");for(let i=0;i<12;i++)rect(m,215,284-i*16,170,14,"pl");
+  const st=(sel,cx,w,from,sh)=>{const g=$(sel);for(let i=0;i<8;i++){const o=(from!==null&&i>=from)?sh:0;rect(g,cx-w/2+o,250-(i+1)*20+2,w,16,o?"bp":"pillar")}};
+  st("#sOk",170,110,null,0);st("#sBad",430,110,4,26);st("#sPart",300,120,4,20);
+  const row=$("#crow");CFG.DEF.forEach((d,i)=>{const c=document.createElement("div");c.className="dc glass";c.dataset.side=i%2?1:-1;c.appendChild(Build.photo(CFG.IMG.def[i]));c.insertAdjacentHTML("beforeend",`<h3>${d.n}</h3><small>${d.i}</small>`);row.appendChild(c)});
+  const ds=$("#ds");CFG.DEF.forEach((d,i)=>{const p=document.createElement("div");p.className="dt glass";p.appendChild(Build.photo(CFG.IMG.def[i]));p.insertAdjacentHTML("beforeend",`<div><h3>${d.n}</h3><p class="w">${d.w}</p><div class="ls"><div><b>Causes</b><ul>${d.c.map(x=>"<li>"+x+"</li>").join("")}</ul></div><div><b>How to fix</b><ul>${d.f.map(x=>"<li>"+x+"</li>").join("")}</ul></div></div></div>`);ds.appendChild(p)});
+  const S=[["Good light","Even, soft lighting; avoid harsh shadows."],["Hold steady","30-40 cm from the part, in focus."],["Capture or import","Take a photo or pick one from your gallery."],["Read the result","Check the class, confidence and advice."]];
+  S.forEach((s,i)=>$("#stp").insertAdjacentHTML("beforeend",`<div class="sc glass"><i>${i+1}</i><div><h3>${s[0]}</h3><p>${s[1]}</p></div></div>`));
+  CFG.TEAM.forEach(t=>{const[a,b]=t.split("|");$("#tg").insertAdjacentHTML("beforeend",`<div class="tm glass"><small>${b}</small><div><b>${a}</b></div></div>`)})}};
+/* ===== SCROLL SCENES (driven only by progress p) ===== */
+const Scenes={
+ printer(p){
+  const A=[["#a1",0,.27],["#a2",.27,.45],["#a3",.45,.63],["#a4",.63,.81],["#a5",.81,1]],f=.04;
+  A.forEach((a,i)=>{const el=$(a[0]);const v=Math.min(i?seg(p,a[1],a[1]+f):1,i<4?1-seg(p,a[2]-f,a[2]):1);el.style.opacity=v;el.setAttribute("transform","translate(0,"+(1-v)*16+")")});
+  const n=ease(seg(p,0,.22))*12;$$("#pL .pl").forEach((l,i)=>l.style.opacity=i<Math.floor(n)?"1":"0");
+  $("#pHead").setAttribute("transform","translate("+(300+Math.sin(n*2.4)*70)+","+(270-n*16)+")");
+  $("#sLine").setAttribute("y",lerp(70,258,ease(seg(p,.83,.93))));$("#sLine").style.opacity=p<.94?1:0;
+  const b=ease(seg(p,.94,.98));$("#pB").style.opacity=b;$("#pB").setAttribute("transform","translate(300,38) scale("+lerp(.5,1,b)+")");
+  const idx=p>=.81?4:p>=.63?3:p>=.45?2:p>=.27?1:0;
+  const T=[["Step 1 · Printing","A 3D printer builds a part one thin layer at a time."],["Defect: Layer shifting","Upper layers slide sideways, so the part is no longer straight."],["Defect: Stringing","Thin plastic threads are left behind between separate parts."],["Defect: Warping","The corners cool unevenly and curl up off the bed."],["Step 5 · AI scan","A photo of the part is analysed to find the defect."]];
+  let t=T[idx][0],s=T[idx][1];if(p>.96){t="Defect found";s="The classifier names the defect and gives a confidence score."}
+  if($("#ct").textContent!==t){$("#ct").textContent=t;$("#cs").textContent=s}
+  $$("#chips span").forEach((c,i)=>c.classList.toggle("on",i===idx))},
+ steps(p){$$("#stp .sc").forEach((c,i)=>{const e=ease(seg(p,i*.2,i*.2+.3)),s=i%2?1:-1;c.style.opacity=e;c.style.transform="translateX("+lerp(s*120,0,e)+"px)"})},
+ cards(p){$$("#crow .dc").forEach(c=>{const s=+c.dataset.side;let x,o;if(p<.35){const e=ease(seg(p,0,.35));x=lerp(s*innerWidth*.6,0,e);o=e}else if(p<.65){x=0;o=1}else{const e=ease(seg(p,.65,1));x=lerp(0,s*innerWidth*.6,e);o=1-e}c.style.opacity=o;c.style.transform="translateX("+x+"px)"})},
+ details(p){const i=clamp(Math.floor(p*5),0,4),sub=p*5-i;$$("#ds .dt").forEach((d,k)=>{if(k!==i){d.style.opacity=0;return}const s=i%2?1:-1;let x,o;if(sub<.3){const e=ease(seg(sub,0,.3));x=lerp(s*80,0,e);o=e}else if(sub<.7||i===4){x=0;o=1}else{const e=ease(seg(sub,.7,1));x=lerp(0,-s*80,e);o=1-e}d.style.opacity=o;d.style.transform="translateX("+x+"%)"});$("#dn").textContent="0"+(i+1)+"/05"}};
+const Engine={sc:[],tick:false,
+ init(){this.sc=[["#printer",Scenes.printer],["#steps",Scenes.steps],["#cards",Scenes.cards],["#details",Scenes.details]].map(a=>({el:$(a[0]),fn:a[1],sp:null}));addEventListener("scroll",()=>this.req(),{passive:true});addEventListener("resize",()=>this.req(),{passive:true});this.req()},
+ req(){if(this.tick)return;this.tick=true;requestAnimationFrame(()=>{this.tick=false;this.run()})},
+ run(){const h=document.documentElement,mx=h.scrollHeight-innerHeight;$("#prog").style.width=(mx>0?clamp(h.scrollTop/mx,0,1)*100:0)+"%";Bg.calc();
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches||innerWidth<768)return;let mv=false;
+  for(const s of this.sc){if(s.el.offsetParent===null){s.sp=null;continue}const r=s.el.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight){s.sp=null;continue}
+   const sp=r.height-innerHeight,t=sp>0?clamp(-r.top/sp,0,1):(r.top<0?1:0);if(s.sp===null)s.sp=t;s.sp+=(t-s.sp)*.12;if(Math.abs(t-s.sp)<.0004)s.sp=t;else mv=true;s.fn(s.sp)}
+  if(mv)this.req()}};
+/* ===== SCAN ===== */
+const Scan={st:null,face:"environment",img:null,type:"upload",
+ init(){$("#bc").onclick=()=>this.cap();$("#bs").onclick=()=>{this.face=this.face==="environment"?"user":"environment";this.stop(true);this.start()};$("#bx").onclick=()=>this.stop();
+  $("#fi").onchange=e=>this.files(e.target.files);const d=$("#drop");d.ondragover=e=>{e.preventDefault();d.classList.add("d")};d.ondragleave=()=>d.classList.remove("d");d.ondrop=e=>{e.preventDefault();d.classList.remove("d");this.files(e.dataTransfer.files)};
+  $("#an").onclick=()=>this.analyze();$("#cl").onclick=()=>this.clear();$("#ra").onclick=()=>{$("#res").style.display="none";this.clear()};
+  new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?(!document.hidden&&this.auto()):this.stop()),{threshold:.05}).observe($("#scan"));
+  document.addEventListener("visibilitychange",()=>{if(document.hidden)this.stop()})},
+ async auto(){if(!Auth.cur()||this.st)return;if(!window.isSecureContext){$("#cam").innerHTML='<div class="cm">Camera needs https or localhost. Import a photo from your gallery instead.</div>';return}
+  try{if(navigator.permissions){const p=await navigator.permissions.query({name:"camera"});if(p.state==="granted"){this.start();return}}}catch(e){}
+  $("#cam").innerHTML='<div class="cm"><div>Camera is not enabled yet.</div><button class="btn p" id="al">Allow</button><button class="btn g" id="dn2">Deny</button></div>';
+  $("#al").onclick=()=>this.start();$("#dn2").onclick=()=>{$("#cam").innerHTML='<div class="cm">Camera permission was denied. Allow it in your browser site settings and reload, or import a photo from your gallery.</div>'}},
+ async start(){try{this.st=await navigator.mediaDevices.getUserMedia({video:{facingMode:this.face},audio:false});const v=document.createElement("video");v.srcObject=this.st;v.autoplay=true;v.playsInline=true;v.muted=true;$("#cam").innerHTML="";$("#cam").appendChild(v);$("#bc").disabled=false;$("#bs").disabled=false;$("#bx").style.display="inline-block"}
+  catch(e){$("#cam").innerHTML='<div class="cm">Could not access the camera. Allow camera permission in your browser settings, or import a photo from your gallery.</div>'}},
+ stop(q){if(this.st){this.st.getTracks().forEach(t=>t.stop());this.st=null}if(!q){if($("#cam video"))$("#cam").innerHTML='<div class="cm">Camera stopped.</div>';$("#bc").disabled=true;$("#bs").disabled=true;$("#bx").style.display="none"}},
+ cap(){const v=$("#cam video");if(!v)return;const c=document.createElement("canvas");c.width=v.videoWidth||640;c.height=v.videoHeight||480;c.getContext("2d").drawImage(v,0,0,c.width,c.height);c.toBlob(b=>this.prev(URL.createObjectURL(b),"camera"),"image/jpeg",.9)},
+ files(fl){const l=[...fl].filter(f=>["image/jpeg","image/png","image/webp"].includes(f.type)&&f.size<=10485760);if(!l.length){alert("Choose a JPG, PNG or WEBP image under 10 MB.");return}this.prev(URL.createObjectURL(l[0]),"upload")},
+ prev(u,t){this.img=u;this.type=t;$("#pv").innerHTML="";const i=document.createElement("img");i.src=u;i.alt="Selected photo";$("#pv").appendChild(i);$("#prev").style.display="block";$("#res").style.display="none";$("#proc").style.display="none"},
+ clear(){this.img=null;$("#prev").style.display="none";$("#pv").innerHTML="";$("#fi").value=""},
+ thumb(u){return new Promise(r=>{const i=new Image();i.onload=()=>{const s=Math.min(1,320/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.round(i.width*s);c.height=Math.round(i.height*s);c.getContext("2d").drawImage(i,0,0,c.width,c.height);r(c.toDataURL("image/jpeg",.7))};i.onerror=()=>r(null);i.src=u})},
+ async analyze(){if(!this.img)return;$("#res").style.display="none";$("#proc").style.display="block";
+  const T=JSON.parse(localStorage.getItem("dd_t")||"[]"),av=T.length?Math.round(T.reduce((a,b)=>a+b,0)/T.length):0;
+  $("#est").textContent=!av?"Estimated time: 5-10 seconds":av>20?"The server may be waking up, this can take up to a minute":"Estimated time: about "+av+" seconds";
+  const t0=Date.now();let r;
+  try{if(CFG.API_URL){const b=await(await fetch(this.img)).blob(),fd=new FormData();fd.append("file",b,"scan.jpg");const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),20000);let x;try{x=await fetch(CFG.API_URL+"/detect",{method:"POST",body:fd,signal:ac.signal})}finally{clearTimeout(tm)}if(!x.ok)throw new Error("Server error");r=Det.adapt(await x.json());await Det.mark(this.img,r)}
+   else{await new Promise(z=>setTimeout(z,1800+Math.random()*1400));const D=CFG.DEF;if(Math.random()<.3)r={class_name:"Normal",confidence:.9,top3:[{class_name:"Normal",confidence:.9},{class_name:D[0].n,confidence:.06},{class_name:D[1].n,confidence:.03}]};else{const k=Math.floor(Math.random()*D.length),c=.7+Math.random()*.28;r={class_name:D[k].n,confidence:c,top3:[{class_name:D[k].n,confidence:c},{class_name:D[(k+1)%5].n,confidence:c*.4},{class_name:D[(k+2)%5].n,confidence:c*.2}]}}}}
+  catch(e){$("#proc").style.display="none";alert(e&&e.name==="AbortError"?"Server is slow or not reachable. Please make sure the API is running.":"Could not analyse the image. Please check the API is running and try again.");return}
+  T.push((Date.now()-t0)/1000);localStorage.setItem("dd_t",JSON.stringify(T.slice(-10)));$("#proc").style.display="none";this.show(r)},
+ async show(r){const ok=/normal/i.test(r.class_name),d=CFG.DEF.find(x=>x.n.toLowerCase()===String(r.class_name).toLowerCase())||(/spaghetti/i.test(r.class_name)?SPAG:null),pc=Math.round(r.confidence*100);
+  $("#res").style.display="block";$("#rb").className="bdg "+(ok?"good":"bad");$("#rb").textContent=ok?"Normal":"Defective";$("#rc").textContent=r.class_name;$("#rp").textContent=pc+"%";
+  $("#rf").style.width="0";requestAnimationFrame(()=>$("#rf").style.width=pc+"%");
+  $("#t3").innerHTML=(r.top3||[]).map(t=>`<div><span>${t.class_name}</span><span class="bar"><i style="width:${Math.round(t.confidence*100)}%"></i></span><span>${Math.round(t.confidence*100)}%</span></div>`).join("");
+  $("#rd").innerHTML=d?`<b>What it is:</b> ${d.w}<br><b>Advice:</b> ${d.f.join("; ")}.`:"No significant defect detected.";$("#rw").style.display=pc<60?"block":"none";
+  const u=Auth.cur();if(u){Auth.add(u.id,{c:r.class_name,p:r.confidence,t3:r.top3,img:await this.thumb(this.img),time:new Date().toISOString()});Hist.render()}}};
+const LBL={spagetti:"Spaghetti",string:"Stringing",warp:"Warping",good:"Normal"},SPAG={w:"The print has failed and loose filament is piling up like noodles instead of forming the part.",f:["Stop the print now","Check bed adhesion and the first layer","Re-level the bed and slice again"]};
+const Det={nm:l=>LBL[l]||l,
+ adapt(j){const d=(j.detections||[]).slice().sort((a,b)=>b.confidence-a.confidence),t=j.top_defect||d[0];return{class_name:t?this.nm(t.label):"Normal",confidence:t?t.confidence:0,top3:d.slice(0,3).map(x=>({class_name:this.nm(x.label),confidence:x.confidence})),dets:d}},
+ mark(u,r){return new Promise(res=>{const i=new Image();i.onload=()=>{const c=document.createElement("canvas");c.width=i.naturalWidth;c.height=i.naturalHeight;const g=c.getContext("2d"),lw=Math.max(3,c.width/200);g.drawImage(i,0,0);g.lineWidth=lw;g.font="bold "+Math.max(14,c.width/35)+"px sans-serif";
+  (r.dets||[]).forEach(x=>{const b=x.box,col=x.label==="good"?"#2fae6b":"#e5484d";g.strokeStyle=col;g.fillStyle=col;g.strokeRect(b[0],b[1],b[2]-b[0],b[3]-b[1]);g.fillText(this.nm(x.label)+" "+Math.round(x.confidence*100)+"%",b[0]+4,Math.max(lw+14,b[1]-6))});
+  const im=$("#pv img");if(im){im.src=c.toDataURL("image/jpeg",.85);im.style.objectFit="contain"}res()};i.onerror=()=>res();i.src=u})}};
+/* ===== LIVE MONITOR ===== */
+const Live={on:false,busy:false,st:null,tm:null,wl:null,ac:null,streak:0,hist:[],
+ init(){$("#lgo").onclick=()=>this.on?this.stop():this.start();addEventListener("pagehide",()=>this.stop());document.addEventListener("visibilitychange",()=>{if(this.on&&!document.hidden)this.lock()})},
+ msg(t){$("#lcam").innerHTML='<div class="cm">'+t+'</div>'},
+ async start(){if(!window.isSecureContext){this.msg("Camera needs https or localhost.");return}
+  try{this.st=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false})}catch(e){this.msg("Could not access the camera. Allow camera permission and try again.");return}
+  const v=document.createElement("video");v.srcObject=this.st;v.autoplay=true;v.playsInline=true;v.muted=true;$("#lcam").innerHTML="";$("#lcam").appendChild(v);
+  try{if("Notification" in window&&Notification.permission==="default")Notification.requestPermission()}catch(e){}
+  try{this.ac=this.ac||new(window.AudioContext||window.webkitAudioContext)()}catch(e){}
+  this.on=true;this.streak=0;$("#lgo").textContent="Stop";$("#lsel").disabled=true;$("#lbn").style.display="none";this.lock();
+  setTimeout(()=>this.tick(),1500);this.tm=setInterval(()=>this.tick(),+$("#lsel").value*1000)},
+ stop(){clearInterval(this.tm);this.tm=null;if(this.st){this.st.getTracks().forEach(t=>t.stop());this.st=null}
+  try{if(this.wl){this.wl.release();this.wl=null}}catch(e){}
+  if(this.on){this.on=false;$("#lgo").textContent="Start";$("#lsel").disabled=false;this.msg("Monitoring stopped.")}},
+ async lock(){try{if(navigator.wakeLock&&this.on)this.wl=await navigator.wakeLock.request("screen")}catch(e){}},
+ async tick(){const v=$("#lcam video");if(this.busy||!this.on||!v||!v.videoWidth)return;this.busy=true;
+  const w=Math.min(640,v.videoWidth),c=document.createElement("canvas");c.width=w;c.height=Math.round(v.videoHeight*w/v.videoWidth);c.getContext("2d").drawImage(v,0,0,c.width,c.height);
+  const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),20000);
+  try{const b=await new Promise(r=>c.toBlob(r,"image/jpeg",.8)),fd=new FormData();fd.append("file",b,"frame.jpg");
+   const x=await fetch(CFG.API_URL+"/detect",{method:"POST",body:fd,signal:ctl.signal});if(!x.ok)throw 0;this.res(await x.json())}
+  catch(e){this.log("err","Connection problem")}finally{clearTimeout(tm);this.busy=false}},
+ res(j){const s=j.defect_score||0,lab=j.top_defect?Det.nm(j.top_defect.label):"";
+  if(s>=.5){this.streak++;this.log("bad",lab+" "+Math.round(s*100)+"%")}else{this.streak=0;this.log("ok","OK")}
+  const b=$("#lbn");b.style.display=this.streak>=3?"block":"none";
+  if(this.streak>=3){b.textContent="Possible print failure: "+lab+" detected in "+this.streak+" checks in a row. Please check your printer.";this.alert(lab)}},
+ log(k,t){const d=new Date().toLocaleTimeString();this.hist.push({k,t:d+" · "+t});this.hist=this.hist.slice(-20);
+  $("#lst").className="bdg "+(k==="ok"?"good":k==="bad"?"bad":"");$("#lst").textContent=k==="ok"?"OK":k==="bad"?"Warning":"Connection problem";$("#ltm").textContent="Last check: "+d+(k==="bad"?" · "+t:"");
+  $("#ltl").innerHTML=this.hist.map(h=>'<i class="'+h.k+'" title="'+h.t+'"></i>').join("")},
+ alert(l){try{const a=this.ac,o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.value=.2;o.start();o.stop(a.currentTime+.5)}catch(e){}
+  try{if("Notification" in window&&Notification.permission==="granted")new Notification("3D print alert",{body:"Possible defect: "+l,tag:"dd-alert"})}catch(e){}}};
+/* ===== HISTORY ===== */
+const Hist={open:null,
+ init(){new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)this.close()}),{threshold:.01}).observe($("#history"))},
+ render(){const u=Auth.cur(),a=$("#ha");if(!u){a.innerHTML="";return}const h=Auth.hist(u.id);
+  if(!h.length){a.innerHTML='<div class="emp"><p>No scans yet.</p><a class="btn p" href="#scan">Scan a part</a></div>';return}
+  a.innerHTML='<div class="hg">'+h.map((s,i)=>{const ok=/normal/i.test(s.c),im=s.img?`<img src="${s.img}" alt="Scan">`:"",d=CFG.DEF.find(x=>x.n.toLowerCase()===String(s.c).toLowerCase());
+   return `<div class="hc glass" onclick="Hist.tog(${i})"><div class="pw">${s.img?im:PH}</div><span class="hb ${ok?"good":"bad"}">${ok?"Normal":"Defective"}</span><div style="font-weight:600;margin-top:6px">${s.c}</div><div class="hm">${Math.round(s.p*100)}% · ${new Date(s.time).toLocaleString()}</div></div>
+   <div class="hx glass" id="hx${i}"><div class="hxg"><div class="pw">${s.img?im:PH}</div><div><h3>${s.c}</h3><p>Confidence: ${Math.round(s.p*100)}%</p>${(s.t3||[]).map(t=>`<div style="font-size:13px;color:var(--soft)">${t.class_name}: ${Math.round(t.confidence*100)}%</div>`).join("")}${d?`<p style="font-size:13px;color:var(--soft)"><b>Advice:</b> ${d.f.join("; ")}.</p>`:""}<button class="btn g" onclick="Hist.del(${i})">Delete</button></div></div></div>`}).join("")+"</div>"},
+ tog(i){const c=this.open!==null&&$("#hx"+this.open);if(c)c.classList.remove("open");if(this.open===i){this.open=null;return}$("#hx"+i).classList.add("open");this.open=i},
+ close(){if(this.open!==null){const c=$("#hx"+this.open);if(c)c.classList.remove("open");this.open=null}},
+ del(i){const u=Auth.cur();if(u){Auth.del(u.id,i);this.open=null;this.render()}}};
+/* ===== UI ===== */
+const UI={m:"in",
+ init(){$("#av").onclick=()=>$("#dd").classList.toggle("open");document.addEventListener("click",e=>{if(!e.target.closest("#usr"))$("#dd").classList.remove("open")});
+  $("#af").onsubmit=async e=>{e.preventDefault();const id=$("#au").value.trim(),p=$("#ap").value;$("#ae").textContent="";
+   try{if(this.m==="up"){if(p!==$("#ac").value)throw"Passwords do not match.";await Auth.up(id,p)}else await Auth.inn(id,p);this.render()}catch(x){$("#ae").textContent=x.message||x}};
+  $("#mb").onclick=e=>{if(e.target.id==="mb")this.closeProf()};this.render()},
+ mode(m){this.m=m;const u=m==="up";$("#ti").classList.toggle("on",!u);$("#tu").classList.toggle("on",u);$("#cf").style.display=u?"block":"none";$("#ac").required=u;$("#at").textContent=u?"Create your account":"Welcome back";$("#as").textContent=u?"Sign up":"Sign in";$("#ae").textContent="";if(!Auth.cur())$("#hero").scrollIntoView()},
+ eye(id){const i=$("#"+id);i.type=i.type==="password"?"text":"password"},
+ out(){Auth.out();this.render();scrollTo(0,0)},
+ render(){const u=Auth.cur(),sh=(s,v)=>{$(s).style.display=v?"block":"none"};
+  $("#guest").style.display=u?"none":"block";$("#usr").style.display=u?"block":"none";sh("#acard",!u);sh("#hw",u);sh("#printer",!u);sh("#steps",u);sh("#scan",u);sh("#live",u);sh("#history",u);
+  $$(".in").forEach(a=>a.style.display=u?"inline-block":"none");
+  if(u){$("#av").textContent=u.id[0].toUpperCase();$("#wn").textContent=u.id;Hist.render()}else{Scan.stop();Live.stop();this.mode("in")}Engine.req()},
+ prof(){const u=Auth.cur();if(!u)return;$("#pu").textContent=u.id;$("#pn").textContent=Auth.hist(u.id).length;$("#mb").classList.add("open");$("#dd").classList.remove("open")},
+ closeProf(){$("#mb").classList.remove("open");$("#pe").textContent="";$("#op").value="";$("#np").value=""},
+ async chPass(){const u=Auth.cur(),e=$("#pe");try{await Auth.chg(u.id,$("#op").value,$("#np").value);e.style.color="var(--good)";e.textContent="Password updated.";$("#op").value="";$("#np").value=""}catch(x){e.style.color="var(--bad)";e.textContent=x.message||x}}};
+/* ===== INIT (each module guarded so one error never blocks the rest) ===== */
+(function(){
+ if(!matchMedia("(prefers-reduced-motion:reduce)").matches)document.documentElement.classList.add("anim");
+ [Theme.init.bind(Theme),Build.all,Bg.init.bind(Bg),Scan.init.bind(Scan),Live.init.bind(Live),Hist.init.bind(Hist),UI.init.bind(UI),Engine.init.bind(Engine)].forEach(f=>{try{f()}catch(e){console.error(e)}});
+ if(!CFG.API_URL)console.info("API_URL is empty: results are simulated for testing.")
+})();
+</script></body></html>
